@@ -1,5 +1,11 @@
-# THIS IS A WIP, DO NOT RUN without first looking over code
+"""
+Author: Ethan Allis
+Class: SEC-480-01
+Assignment: PowerCLI & 480-Utils
+Note: This is for educational use only and should only be used as such.
+"""
 
+# WORK IN PROGRESS, DO NOT RUN
 # FULL CLONE DEPLOY
 
 Write-Output "Script Beginning"
