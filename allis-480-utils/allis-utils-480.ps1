@@ -136,3 +136,5 @@ Disconnect-VIServer
 
 #End Script
 Exit
+
+# Demo
