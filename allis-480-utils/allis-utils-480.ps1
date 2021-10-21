@@ -15,9 +15,9 @@ Function UserMenu{
     `nPlease enter a number"
 
     switch($mainuserchoice){
-        1{}
-        2{}
-        3{Exit}
+        1{FullClone}
+        2{LinkedClone}
+        3{$global:continue = $false}
     }
 }
 
@@ -39,72 +39,100 @@ Function FullClone{
     Write-Host "Deploying full clone. User input required."
     Start-Sleep -Seconds 1
 
-    Get-VM -Location "BASE-VMs"
+    #User Input and Variable Definitions
+    Get-VM -Location BASE-VMs | Select -ExpandProperty Name 
     $vmchoice = Read-Host -Prompt "Please enter the VM for full clone deploy"
     $vm = Get-VM -Name $vmchoice
-
     Start-Sleep -Seconds 1
 
     $snapshot = Get-Snapshot -VM $vm -Name "base"
-
     Start-Sleep -Seconds 1
 
-    Get-VMHost
+    Get-VMHost | Select -ExpandProperty Name 
     $vmhostchoice = Read-Host -Prompt "Please enter the vm host name"
     $vmhost = Get-VMHost -Name $vmhostchoice
-
     Start-Sleep -Seconds 1
 
-    Get-Datastore
+    Get-Datastore | Select -ExpandProperty Name 
     $dstorechoice = Read-Host -Prompt "Please enter datastore name"
     $dstore = Get-Datastore $dstorechoice
-
     Start-Sleep -Seconds 1
 
+    #Linked Clone Creation
     $linkedname = "{0}.linked" -f $vm.name
     $linkedvm = New-VM -LinkedClone -Name $linkedname -VM $vm -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $dstore
-
     Start-Sleep -Seconds 1
 
+    #Full Clone Creation
     $newvmname = Read-Host -Prompt "Please enter a new VM name"
     $newvm = New-VM -Name $newvmname -VM $linkedvm -VMHost $vmhost -Datastore $dstore
-
     Start-Sleep -Seconds 1
 
+    #Network Adapter Change
     $newvm | Get-NetworkAdapter | Set-NetworkAdapter -NetworkName 480-WAN -Confirm:$false
-
     Start-Sleep -Seconds 1
 
+    #Base Snapshot Creation
     $newvm | new-snapshot -Name "base"
-
     Start-Sleep -Seconds 1
 
+    #Linked Clone Deletion
     $linkedvm | Remove-VM
-
     Start-Sleep -Seconds 1
 
-    Write-Output "Script Complete, Clone Deployed"
-
+    Write-Output "Success! Full clone deployed."
     Start-Sleep -Seconds 3
-    Disconnect-VIServer
 }
 
-# LINKED CLONE DEPLOY
+# Linked Clone Deploy Function
+Function LinkedClone{
+    Write-Host "Deploying linked clone. User input required."
+    Start-Sleep -Seconds 1
 
-Write-Host "Beginning Deployment..."
-Start-Sleep -Seconds 2
-Write-Host "Deploying..."
-$base_vm = Get-VM -Name centos7-BASE
-Start-Sleep -Seconds 1
-$snapshot = Get-Snapshot -VM $base_vm -Name "base"
-Start-Sleep -Seconds 1
-$vmhost = Get-VMHost -Name super11.cyber.local
-Start-Sleep -Seconds 1
-$dstore = Get-Datastore datastore2-super11
-Start-Sleep -Seconds 1
-$newvm = New-VM -Name "centos-capture-target" -VM $base_vm -LinkedClone -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $dstore
-Start-Sleep -Seconds 1
-$newvm | Get-NetworkAdapter | Set-NetworkAdapter -NetworkName 480-WAN -Confirm:$false
-Write-Host "Completed Deployment..."
+    #User Input and Variable Definitions
+    Get-VM -Location BASE-VMs | Select -ExpandProperty Name 
+    $vmchoice = Read-Host -Prompt "Please enter the VM for linked clone deploy"
+    $vm = Get-VM -Name $vmchoice
+    Start-Sleep -Seconds 1
 
-# SCRIPT END
+    $snapshot = Get-Snapshot -VM $vm -Name "base"
+    Start-Sleep -Seconds 1
+
+    Get-VMHost | Select -ExpandProperty Name 
+    $vmhostchoice = Read-Host -Prompt "Please enter the vm host name"
+    $vmhost = Get-VMHost -Name $vmhostchoice
+    Start-Sleep -Seconds 1
+
+    Get-Datastore | Select -ExpandProperty Name 
+    $dstorechoice = Read-Host -Prompt "Please enter datastore name"
+    $dstore = Get-Datastore $dstorechoice
+    Start-Sleep -Seconds 1
+
+    #Linked Clone Creation
+    $linkedname = Read-Host -Prompt "Please enter a new VM name"
+    $linkedvm = New-VM -LinkedClone -Name $linkedname -VM $vm -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $dstore
+    Start-Sleep -Seconds 1
+
+    #Network Adapter Change
+    $linkedvm | Get-NetworkAdapter | Set-NetworkAdapter -NetworkName 480-WAN -Confirm:$false
+    Start-Sleep -Seconds 1
+
+    Write-Output "Success! Linked clone deployed."
+    Start-Sleep -Seconds 3
+}
+
+#Calling Functions and Sciprt Execution
+VIserver
+
+$continue = $true
+while ($continue) {
+    clear
+    UserMenu
+}
+
+#Disconnecting From Server
+Write-Host "Please disconnect for vCenter below:"
+Disconnect-VIServer
+
+#End Script
+Exit
