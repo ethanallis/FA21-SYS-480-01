@@ -5,19 +5,25 @@ Assignment: PowerCLI & 480-Utils
 Note: This is for educational use only and should only be used as such.
 """
 
+#Global Variables
+$serverchoice = $global:DefaultVIServer | Select-Object -ExpandProperty Name
+$continue = $true
+
 #User Menu Function
 Function UserMenu{
     $mainuserchoice = Read-Host -Prompt "
     `nPowerCLI Deploy Script. Options Below.
     `n1. Full Clone Deploy
     `n2. Linked Clone Deploy
-    `n3. Exit
+    `n3. Create New Network
+    `n4. Exit
     `nPlease enter a number"
 
     switch($mainuserchoice){
         1{FullClone}
         2{LinkedClone}
-        3{$global:continue = $false}
+        3{DeployNetwork}
+        4{$global:continue = $false}
     }
 }
 
@@ -40,7 +46,7 @@ Function FullClone{
     Start-Sleep -Seconds 1
 
     #User Input and Variable Definitions
-    Get-VM -Location BASE-VMs | Select -ExpandProperty Name 
+    Get-VM -Location BASE-VMs | Select-Object -ExpandProperty Name 
     $vmchoice = Read-Host -Prompt "Please enter the VM for full clone deploy"
     $vm = Get-VM -Name $vmchoice
     Start-Sleep -Seconds 1
@@ -48,12 +54,12 @@ Function FullClone{
     $snapshot = Get-Snapshot -VM $vm -Name "base"
     Start-Sleep -Seconds 1
 
-    Get-VMHost | Select -ExpandProperty Name 
+    Get-VMHost | Select-Object -ExpandProperty Name 
     $vmhostchoice = Read-Host -Prompt "Please enter the vm host name"
     $vmhost = Get-VMHost -Name $vmhostchoice
     Start-Sleep -Seconds 1
 
-    Get-Datastore | Select -ExpandProperty Name 
+    Get-Datastore | Select-Object -ExpandProperty Name 
     $dstorechoice = Read-Host -Prompt "Please enter datastore name"
     $dstore = Get-Datastore $dstorechoice
     Start-Sleep -Seconds 1
@@ -90,7 +96,7 @@ Function LinkedClone{
     Start-Sleep -Seconds 1
 
     #User Input and Variable Definitions
-    Get-VM -Location BASE-VMs | Select -ExpandProperty Name 
+    Get-VM -Location BASE-VMs | Select-Object -ExpandProperty Name 
     $vmchoice = Read-Host -Prompt "Please enter the VM for linked clone deploy"
     $vm = Get-VM -Name $vmchoice
     Start-Sleep -Seconds 1
@@ -98,12 +104,12 @@ Function LinkedClone{
     $snapshot = Get-Snapshot -VM $vm -Name "base"
     Start-Sleep -Seconds 1
 
-    Get-VMHost | Select -ExpandProperty Name 
+    Get-VMHost | Select-Object -ExpandProperty Name 
     $vmhostchoice = Read-Host -Prompt "Please enter the vm host name"
     $vmhost = Get-VMHost -Name $vmhostchoice
     Start-Sleep -Seconds 1
 
-    Get-Datastore | Select -ExpandProperty Name 
+    Get-Datastore | Select-Object -ExpandProperty Name 
     $dstorechoice = Read-Host -Prompt "Please enter datastore name"
     $dstore = Get-Datastore $dstorechoice
     Start-Sleep -Seconds 1
@@ -121,10 +127,26 @@ Function LinkedClone{
     Start-Sleep -Seconds 3
 }
 
+# Create New Network Function
+Function DeployNetwork{
+    Write-Host "Deploying new virtual switch/nework. User input required."
+    Start-Sleep -Seconds 1
+
+    #User Input and Variable Definitions
+    $networkname = Read-Host -Prompt "Please enter a name for the new network"
+    Get-VMHost | Select-Object -ExpandProperty Name
+    Start-Sleep -Seconds 1
+    
+    $vmhostchoice = Read-Host -Prompt "Please enter the vm host name"
+    Start-Sleep -Seconds 1
+
+    #Creation of Network
+    createNetwork -NetworkName $networkname -esxi_host_name $vmhostchoice -vcenter_server $serverchoice
+}
+
 #Calling Functions and Sciprt Execution
 VIserver
 
-$continue = $true
 while ($continue) {
     clear
     UserMenu
@@ -137,4 +159,4 @@ Disconnect-VIServer
 #End Script
 Exit
 
-# Demo
+#FUNCTIONS THAT NEED TESTING: CreateNetwork, 
