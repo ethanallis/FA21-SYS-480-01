@@ -15,14 +15,14 @@ Function UserMenu{
     `nPowerCLI Deploy Script. Options Below.
     `n1. Full Clone Deploy
     `n2. Linked Clone Deploy
-    `n3. Create New Network
+    `n3. Create New Virtual Switch/Portgroup
     `n4. Exit
     `nPlease enter a number"
 
     switch($mainuserchoice){
         1{FullClone}
         2{LinkedClone}
-        3{DeployNetwork}
+        3{DeploySwitch}
         4{$global:continue = $false}
     }
 }
@@ -127,21 +127,25 @@ Function LinkedClone{
     Start-Sleep -Seconds 3
 }
 
-# Create New Network Function
-Function DeployNetwork{
+# Create New Virtual Switch/Portgroup Function
+Function DeploySwitch{
     Write-Host "Deploying new virtual switch/nework. User input required."
     Start-Sleep -Seconds 1
 
     #User Input and Variable Definitions
-    $networkname = Read-Host -Prompt "Please enter a name for the new network"
+    $switchname = Read-Host -Prompt "Please enter a name for the new virtual switch"
     Get-VMHost | Select-Object -ExpandProperty Name
     Start-Sleep -Seconds 1
     
+    $portgroupchoice = Read-Host -Prompt "Please enter a name for the new virtual portgroup"
+    Start-Sleep -Seconds 1
+
     $vmhostchoice = Read-Host -Prompt "Please enter the vm host name"
     Start-Sleep -Seconds 1
 
-    #Creation of Network
-    createNetwork -NetworkName $networkname -esxi_host_name $vmhostchoice -vcenter_server $serverchoice
+    #Creation of Virtual Switch/Portgroup
+    New-VirtualSwitch -Name $switchname -VMHost $vmhostchoice -Server $serverchoice
+    New-VirtualPortGroup -VirtualSwitch $switchname -Name $portgroupchoice -Server $serverchoice
 }
 
 #Calling Functions and Sciprt Execution
