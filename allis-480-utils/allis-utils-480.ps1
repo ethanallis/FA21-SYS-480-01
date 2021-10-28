@@ -37,12 +37,10 @@ Function UserMenu{
 Function VIserver{
     $subuserchoice = Read-Host -Prompt "Please enter your vCenter hostname, or type 'exit' to quit"
 
-    if ($choice -match "exit")
-    {
-	    Exit
+    if ($subuserchoice -match "exit") {
+        Exit
     }
-    else
-    {
+    else {
 	    Connect-VIServer($subuserchoice)	
     }
 }
@@ -242,7 +240,12 @@ Function AcquireIP{
 }
 
 #Calling Functions and Sciprt Execution
-VIserver
+if ($continue) {
+    VIserver
+} 
+else {
+    Write-Output "Exiting..."
+}
 
 while ($continue) {
     clear
@@ -255,5 +258,3 @@ Disconnect-VIServer
 
 #End Script
 Exit
-
-#FUNCTIONS THAT NEED TESTING: CreateNetwork, 
