@@ -208,7 +208,8 @@ Function SetNetwork{
 
     #Changing of Network Adapters
     Get-NetworkAdapter -VM $vm -Server $serverchoice | Select-Object -ExpandProperty Name
-    $netadapterchoice = Read-Host -Prompt "Please enter the network adapter to change"
+    $netadapterinput = Read-Host -Prompt "Please enter the network adapter to change"
+    $netadapterchoice = Get-NetworkAdapter -VM $vm -Server $serverchoice -Name $netadapterinput
     Start-Sleep -Seconds 1
 
     Get-VirtualPortGroup -Server $serverchoice | Select-Object -ExpandProperty Name
