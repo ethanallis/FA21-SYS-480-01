@@ -16,14 +16,21 @@ Function UserMenu{
     `n1. Full Clone Deploy
     `n2. Linked Clone Deploy
     `n3. Create New Virtual Switch/Portgroup
-    `n4. Exit
+    `n4. Start VM   5. Stop VM
+    `n6. Set/Change Network Adapters
+    `n7. Acquire IP
+    `n8. Exit
     `nPlease enter a number"
 
     switch($mainuserchoice){
         1{FullClone}
         2{LinkedClone}
         3{DeploySwitch}
-        4{$global:continue = $false}
+        4{StartVM}
+        5{StopVM}
+        6{SetNetwork}
+        7{AcquireIP}
+        8{$global:continue = $false}
     }
 }
 
@@ -134,18 +141,103 @@ Function DeploySwitch{
 
     #User Input and Variable Definitions
     $switchname = Read-Host -Prompt "Please enter a name for the new virtual switch"
-    Get-VMHost | Select-Object -ExpandProperty Name
     Start-Sleep -Seconds 1
     
     $portgroupchoice = Read-Host -Prompt "Please enter a name for the new virtual portgroup"
     Start-Sleep -Seconds 1
 
+    Get-VMHost | Select-Object -ExpandProperty Name
     $vmhostchoice = Read-Host -Prompt "Please enter the vm host name"
     Start-Sleep -Seconds 1
 
     #Creation of Virtual Switch/Portgroup
     New-VirtualSwitch -Name $switchname -VMHost $vmhostchoice -Server $serverchoice
+    Start-Sleep -Seconds 1
     New-VirtualPortGroup -VirtualSwitch $switchname -Name $portgroupchoice -Server $serverchoice
+
+    Write-Output "Success! New virtual switch and portgroup deployed."
+    Start-Sleep -Seconds 3
+}
+
+# Start VM Function
+Function StartVM{
+    Write-Host "Starting selected VM. User input required."
+    Start-Sleep -Seconds 1
+
+    #User Input and Variable Definitions
+    Get-VM | Select-Object -ExpandProperty Name 
+    $vmchoice = Read-Host -Prompt "Please enter the VM for startup"
+    $vm = Get-VM -Name $vmchoice
+    Start-Sleep -Seconds 1
+
+    #Starting of Selected VMs
+    Start-VM -VM $vm -Server $serverchoice
+
+    Write-Output "Success! VM started."
+    Start-Sleep -Seconds 3
+}
+
+# Stop VM Function
+Function StopVM{
+    Write-Host "Stopping selected VM. User input required."
+    Start-Sleep -Seconds 1
+
+    #User Input and Variable Definitions
+    Get-VM | Select-Object -ExpandProperty Name 
+    $vmchoice = Read-Host -Prompt "Please enter the VM for stop"
+    $vm = Get-VM -Name $vmchoice
+    Start-Sleep -Seconds 1
+
+    #Stoping of Selected VMs
+    Stop-VM -VM $vm -Server $serverchoice
+
+    Write-Output "Success! VM stopped."
+    Start-Sleep -Seconds 3
+}
+
+# Set/Change Network Adapter Function
+Function SetNetwork{
+    Write-Host "Changing network adapter(s). User input required."
+    Start-Sleep -Seconds 1
+
+    #User Input and Variable Definitions
+    Get-VM | Select-Object -ExpandProperty Name 
+    $vmchoice = Read-Host -Prompt "Please enter the VM to change network adapter"
+    $vm = Get-VM -Name $vmchoice
+    Start-Sleep -Seconds 1
+
+    #Changing of Network Adapters
+    Get-NetworkAdapter -VM $vm -Server $serverchoice | Select-Object -ExpandProperty Name
+    $netadapterchoice = Read-Host -Prompt "Please enter the network adapter to change"
+    Start-Sleep -Seconds 1
+
+    Get-VirtualPortGroup -Server $serverchoice | Select-Object -ExpandProperty Name
+    $portgroupchoice = Read-Host -Prompt "Please enter the portgroup the network adapter will be changed to"
+    Start-Sleep -Seconds 1
+
+    Set-NetworkAdapter -NetworkAdapter $netadapterchoice -NetworkName $portgroupchoice -Server $serverchoice -Confirm:$false
+
+    Write-Output "Success! Network adapter changed."
+    Start-Sleep -Seconds 3
+}   
+
+# Accquire Host IP Function
+Function AcquireIP{
+    Write-Host "Acquiring IPs. User input required."
+    Start-Sleep -Seconds 1
+
+    #User Input and Variable Definitions
+    Get-VM | Select-Object -ExpandProperty Name 
+    $vmchoice = Read-Host -Prompt "Please enter the VM to acquire IP"
+    $vm = Get-VM -Name $vmchoice
+    Start-Sleep -Seconds 1
+
+    #IP Info Consolidation
+    $vmip = $vm.guest.IPAddress[0]
+    Write-Output "$vmip hostname=$vm"
+
+    Write-Output "Success! IP Acquired"
+    Start-Sleep -Seconds 3
 }
 
 #Calling Functions and Sciprt Execution
