@@ -4,6 +4,7 @@ This script was created by Ethan Allis in 2020. It was designed to provide the e
 
 For more info see the accompanying wiki pages
 [Milestone 6 - PowerCLI and 480-utils ](https://github.com/ethanallis/FA21-SYS-480-01/wiki/Milestone-6-PowerCLI-and-480-utils)
+or 
 [Milestone 7 - Blue Network and vyos Provisioning with Ansible ](https://github.com/ethanallis/FA21-SYS-480-01/wiki/Milestone-7-Blue-Network-and-VYOS-Provisioning-with-Ansible)
 
 This is a proof of concept for educational use only.
