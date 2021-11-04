@@ -4,6 +4,7 @@ network:
           addresses: [{{ lan_ip }}/{{ prefix }}]
           gateway4: {{ gateway }}
           nameservers:
+            search: [{{ domain }}]
             addresses: [{{ gname_server }}]
           dhcp4: no
     version: 2
