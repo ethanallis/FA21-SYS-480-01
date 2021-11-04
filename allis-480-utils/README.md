@@ -7,4 +7,6 @@ For more info see the accompanying wiki pages:
 
 * [Milestone 7 - Blue Network and vyos Provisioning with Ansible ](https://github.com/ethanallis/FA21-SYS-480-01/wiki/Milestone-7-Blue-Network-and-VYOS-Provisioning-with-Ansible)
 
+* [Milestone 8 Deploying and Post Provisioning of BlueX Linux Servers](https://github.com/ethanallis/FA21-SYS-480-01/wiki/Milestone-8-Deploying-and-Post-Provisioning-of-BlueX-Linux-Servers)
+
 This is a proof of concept for educational use only.
