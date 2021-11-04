@@ -42,10 +42,14 @@
         line: "127.0.1.1 {{ hostname }}"
       become: yes
 
+    - name: bounce the network
+      shell: "sleep 5 && hostnamectl set-hostname {{ hostname }}"
+      become: yes
+
     - name: push over the networking script
       template:
-        src: "files/linux/ifcfg.j2"
-        dest: "/etc/sysconfig/network-scripts/ifcfg-{{ device }}"
+        src: "files/linux/netplan.j2"
+        dest: "/etc/netplan/00-installer-config.yaml"
         mode: 0644
         owner: root
         group: root
@@ -53,7 +57,7 @@
       become: yes
 
     - name: bounce the network
-      shell: "sleep 5 && netplan apply7"
+      shell: "sleep 5 && netplan apply"
       become: yes
       async: 1
       poll: 0
