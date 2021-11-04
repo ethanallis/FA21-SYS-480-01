@@ -6,13 +6,13 @@
       commands: show version
     register: version
   - debug:
-    var: version.stdout_lines
+      var: version.stdout_lines
 
   - name: configure vyos dhcp
     vyos_config:
       save: yes
       lines:
-      - set service dhcp-server global-parameters 'local-address {{ lan_ip}};'
+      - set service dhcp-server global-parameters 'local-address {{ lan_ip }};'
       - set service dhcp-server shared-network-name {{ shared_network }} authoritative
       - set service dhcp-server shared-network-name {{ shared_network }} subnet {{ lan }} default-router '{{ lan_ip }}'
       - set service dhcp-server shared-network-name {{ shared_network }} subnet {{ lan }} dns-server '{{ dhcp_name_server }}'
