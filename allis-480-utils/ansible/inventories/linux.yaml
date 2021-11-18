@@ -30,3 +30,4 @@ linux:
     gateway: 10.0.5.2
     name_server: 10.0.5.5
     domain:  blue11.local
+    mysql_root_password: "testpassword"
