@@ -4,16 +4,70 @@
   gather_facts: true
   become: true
   tasks:
+    - name: Populate repo
+      template:
+        src: "files/linux/galerarepo.j2"
+        dest: "/etc/yum.repos.d/mariadb.repo"
+        mode: 0644
+        owner: root
+        group: root
+        force: yes
+    
+    - name: Upgrade all packages
+      yum: name=* state=latest
+
+    - name: Eenable repo 
+      shell: "yum makecache --disablerepo='*' --enablerepo='mariadb'"
+
     - name: Install
       yum:
         name:
-          - mariadb-server
+          - MariaDB-Galera-server
+          - MariaDB-client
+          - MariaDB-server
+          - MariaDB-common
+          - lsof
+          - policycoreutils-python
+          - firewalld
+          - rsync
+          - galera
+          - socat
           - MySQL-python
         state: latest
+
+    - name: Allow port 3306/tcp
+      shell: "firewall-cmd --add-port=3306/tcp --zone=public --permanent"
+      
+    - name: Allow port 4444/tcp  
+      shell: "firewall-cmd --add-port=4444/tcp --zone=public --permanent"
+      
+    - name: Allow port 4567/udp
+      shell: "firewall-cmd --add-port=4567/udp --zone=public --permanent"
+      
+    - name: Allow port 4567/tcp  
+      shell: "firewall-cmd --add-port=4567/tcp --zone=public --permanent"
+      
+    - name: Allow port 4568/tcp 
+      shell: "firewall-cmd --add-port=4568/tcp --zone=public --permanent"
+
+    - name: Allow node 1
+      shell: "firewall-cmd --add-source=10.0.5.10/24 --zone=public --permanent"
+
+    - name: Allow node 2
+      shell: "firewall-cmd --add-source=10.0.5.11/24 --zone=public --permanent"
+
+    - name: Allow node 3
+      shell: "firewall-cmd --add-source=10.0.5.12/24 --zone=public --permanent"
+    
+    - name: Reload firewall
+      shell: "firewall-cmd --reload"
+
+    - name: Disable SELinux
+      selinux: state=disabled
     
     - name: Start mariadb
       service:
-        name: mariadb
+        name: mysql
         enabled: true
         state: started
 
@@ -35,11 +89,25 @@
         host: "{{ ansible_fqdn }}"
         state: absent
 
-        - name: Implement Galera
+    - name: Stop mariadb
+      service:
+        name: mysql
+        state: stopped
+
+    - name: Implement Galera
       template:
         src: "files/linux/galera.j2"
-        dest: "/etc/mysql/my.cnf.d/server.cnf"
+        dest: "/etc/my.cnf.d/galera.cnf"
         mode: 0644
         owner: root
         group: root
         force: yes
+        
+    - name: Initialize the cluster
+      shell: "galera_new_cluster"
+      run_once: true
+
+    - name: Start mariadb
+      service:
+        name: mysql
+        state: started
