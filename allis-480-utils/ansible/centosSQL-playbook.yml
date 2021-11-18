@@ -22,7 +22,6 @@
     - name: Install
       yum:
         name:
-          - MariaDB-Galera-server
           - MariaDB-client
           - MariaDB-server
           - MariaDB-common
@@ -30,7 +29,6 @@
           - policycoreutils-python
           - firewalld
           - rsync
-          - galera
           - socat
           - MySQL-python
         state: latest
@@ -67,7 +65,7 @@
     
     - name: Start mariadb
       service:
-        name: mysql
+        name: mariadb
         enabled: true
         state: started
 
@@ -91,7 +89,7 @@
 
     - name: Stop mariadb
       service:
-        name: mysql
+        name: mariadb
         state: stopped
 
     - name: Implement Galera
@@ -109,5 +107,5 @@
 
     - name: Start mariadb
       service:
-        name: mysql
+        name: mariadb
         state: started
