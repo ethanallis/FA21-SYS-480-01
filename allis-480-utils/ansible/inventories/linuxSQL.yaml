@@ -22,3 +22,6 @@ linux:
     name_server: 10.0.5.5
     domain:  blue11.local
     mysql_root_password: "testpassword"
+    nodeone: 10.0.5.10
+    nodetwo: 10.0.5.11
+    nodethree: 10.0.5.12

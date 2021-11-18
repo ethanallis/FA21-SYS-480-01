@@ -4,16 +4,42 @@
   gather_facts: true
   become: true
   tasks:
-    - name: install
+    - name: Install
       yum:
         name:
-          - MariaDB-server
-          - MariaDB-client
-          - python3-pymysql
+          - mariadb-server
+          - MySQL-python
         state: latest
     
-    - name: start mariadb
+    - name: Start mariadb
       service:
         name: mariadb
         enabled: true
         state: started
+
+    - name: Set root pass
+      mysql_user:
+        check_implicit_admin: true
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        user: root
+        password: "{{ mysql_root_password }}"
+        host: localhost
+
+    - name: Delete remote root login
+      mysql_user:
+        check_implicit_admin: true
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        user: root
+        host: "{{ ansible_fqdn }}"
+        state: absent
+
+        - name: Implement Galera
+      template:
+        src: "files/linux/galera.j2"
+        dest: "/etc/mysql/my.cnf.d/server.cnf"
+        mode: 0644
+        owner: root
+        group: root
+        force: yes
