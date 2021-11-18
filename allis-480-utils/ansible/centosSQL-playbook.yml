@@ -7,8 +7,9 @@
     - name: install
       yum:
         name:
-          - mariadb-server
-          - python3-PyMySQL
+          - MariaDB-server
+          - MariaDB-client
+          - python3-pymysql
         state: latest
     
     - name: start mariadb
