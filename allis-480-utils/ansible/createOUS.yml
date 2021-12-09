@@ -1,0 +1,47 @@
+# This playbook creates new organizational units per user specification
+---
+- name: Create new OUs
+  hosts: 10.0.5.5
+
+  tasks:
+    - win_shell: install-packageprovider -name nuget
+    - name: Install XactiveDirectory
+      win_psmodule:
+          name: ActiveDirectoryDSC
+          state: present
+
+    - name: Create blue11
+      win_dsc:
+          resource_name: ADOrganizationalUnit
+          name: "blue11"
+          path: "DC=blue11, DC=local"
+
+    - name: Create Accounts
+      win_dsc:
+          resource_name: ADOrganizationalUnit
+          name: "Accounts"
+          path: "OU=blue11, DC=blue11, DC=local"
+
+    - name: Create Groups
+      win_dsc:
+          resource_name: ADOrganizationalUnit
+          name: "Groups"
+          path: "OU=Accounts, OU=blue11, DC=blue11, DC=local"
+
+    - name: Create Computers
+      win_dsc:
+          resource_name: ADOrganizationalUnit
+          name: "Computers"
+          path: "OU=blue11, DC=blue11, DC=local"
+
+    - name: Create Servers
+      win_dsc:
+          resource_name: ADOrganizationalUnit
+          name: "Servers"
+          path: "OU=Computers, OU=blue11, DC=blue11, DC=local"
+
+    - name: Create Workstations
+      win_dsc:
+          resource_name: ADOrganizationalUnit
+          name: "Workstations"
+          path: "OU=Computers, OU=blue11, DC=blue11, DC=local"
