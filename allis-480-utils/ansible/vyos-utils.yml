@@ -1,0 +1,24 @@
+#This playbook provides static DHCP mappings to designated VYOS machines
+
+- name: vyos network config
+  hosts: vyos
+  vars_prompt:
+  - name: mapping_name
+    prompt: "Please enter a new mapping name"
+    private: no
+
+  - name: mac_address
+    prompt: "Please enter the MAC address to be associated with the new map"
+    private: no
+
+  - name: ip_address
+    prompt: "Please enter the IP address to be associated with the new map"
+    private: no
+  
+  tasks:
+  - name: configure dhcp mappings
+    vyos_config:
+      save: yes
+      lines:
+      - set service dhcp-server shared-network-name '{{ shared_network }}' subnet '{{ lan }}' static-mapping '{{ mapping_name }}' ip-address '{{ ip_address }}'
+      - set service dhcp-server shared-network-name '{{ shared_network }}' subnet '{{ lan }}' static-mapping '{{ mapping_name }}' mac-address '{{ mac_address }}'

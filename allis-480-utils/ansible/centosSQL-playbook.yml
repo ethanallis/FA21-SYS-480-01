@@ -89,7 +89,7 @@
 
     - name: Stop mariadb
       service:
-        name: mariadb
+        name: mysql
         state: stopped
 
     - name: Implement Galera
@@ -107,5 +107,5 @@
 
     - name: Start mariadb
       service:
-        name: mariadb
+        name: mysql
         state: started

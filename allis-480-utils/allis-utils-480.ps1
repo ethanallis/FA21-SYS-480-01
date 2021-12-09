@@ -19,7 +19,8 @@ Function UserMenu{
     `n4. Start VM   5. Stop VM
     `n6. Set/Change Network Adapters
     `n7. Acquire IP
-    `n8. Exit
+    `n8. Acquire MAC
+    `n9. Exit
     `nPlease enter a number"
 
     switch($mainuserchoice){
@@ -30,7 +31,8 @@ Function UserMenu{
         5{StopVM}
         6{SetNetwork}
         7{AcquireIP}
-        8{$global:continue = $false}
+        8{AcquireMAC}
+        9{$global:continue = $false}
     }
 }
 
@@ -236,7 +238,26 @@ Function AcquireIP{
     Write-Output "$vmip hostname=$vm"
 
     Write-Output "Success! IP Acquired"
-    Start-Sleep -Seconds 3
+    Start-Sleep -Seconds 10
+}
+
+# Accquire Host MAC Function
+Function AcquireMAC{
+    Write-Host "Acquiring MAC. User input required."
+    Start-Sleep -Seconds 1
+
+    #User Input and Variable Definitions
+    Get-VM | Select-Object -ExpandProperty Name 
+    $vmchoice = Read-Host -Prompt "Please enter the VM to acquire IP"
+    $vm = Get-VM -Name $vmchoice
+    Start-Sleep -Seconds 1
+
+    #MAC Info Consolidation
+    $macaddr = ($vm | Get-NetworkAdapter)[0].MacAddress
+    Write-Output "$macaddr hostname=$vm"
+
+    Write-Output "Success! MAC Acquired"
+    Start-Sleep -Seconds 10
 }
 
 #Calling Functions and Sciprt Execution
