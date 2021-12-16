@@ -1,0 +1,21 @@
+# This playbook downloads required windows software
+---
+- name: Install software
+  hosts: workstations
+  gather_facts: no
+  tasks:
+  - name: create 480 directory
+    win_file:
+      path: C:\480
+      state: directory
+
+  - name: copy chrome msi
+    win_copy:
+      src: file/googlechromestandaloneenterprisse64.msi
+      dest: C:\480\googlechromestandaloneenterprisse64.msi
+
+  - name: install chrome
+    win_package:
+      path: C:\480\googlechromestandaloneenterprisse64.msi
+      wait: yes
+      state: present
