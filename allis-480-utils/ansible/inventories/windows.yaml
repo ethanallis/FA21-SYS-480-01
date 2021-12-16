@@ -7,6 +7,12 @@ windows:
           hostname: dc-blue11
         10.0.5.6:
           hostname: fs01
+    workstations:
+      hosts:
+        10.0.5.89:
+          hostname: wks1
+        10.0.5.90:
+          hostname: wks2
 
   vars:
     ansible_user: deployer
