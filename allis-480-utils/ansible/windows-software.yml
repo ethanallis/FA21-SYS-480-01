@@ -11,18 +11,18 @@
 
   - name: copy chrome msi
     win_copy:
-      src: file/googlechromestandaloneenterprisse64.msi
-      dest: C:\480\googlechromestandaloneenterprisse64.msi
+      src: files/chrome.msi
+      dest: C:\480\chrome.msi
 
   - name: install chrome
     win_package:
-      path: C:\480\googlechromestandaloneenterprisse64.msi
+      path: C:\480\chrome.msi
       wait: yes
       state: present
 
   - name: copy wiregaurd msi
     win_copy:
-      src: file/wireguard.msi
+      src: files/wireguard.msi
       dest: C:\480\wireguard.msi
 
   - name: install wiregaurd
@@ -33,7 +33,7 @@
 
   - name: copy putty msi
     win_copy:
-      src: file/putty.msi
+      src: files/putty.msi
       dest: C:\480\putty.msi
 
   - name: install putty
