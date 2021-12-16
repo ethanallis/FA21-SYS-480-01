@@ -27,7 +27,7 @@
     delegate_to: 127.0.0.1
 
   - name: add users
-    win_domain_users:
+    win_domain_user:
       name: "{{ item.account_name }}"
       description: "Ansible managed user"
       password: "{{ item.password }}"
@@ -37,6 +37,7 @@
   - name: add users to group
     win_domain_group_membership:
       name: "{{ item.group }}"
-      members: "{{ item.account_name }}"
-      state: pure
+      members: 
+        - "{{ item.account_name }}"
+      state: present
     with_items: "{{ accounts.list }}"
