@@ -1,7 +1,7 @@
 # This playbook configures windows machiens to use a static IP
 
 - name: windows-networking
-  hosts: servers
+  hosts: 10.0.5.6
   gather_facts: no
   vars_prompt:
   - name: adminpassword

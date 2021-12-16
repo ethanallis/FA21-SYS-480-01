@@ -1,0 +1,26 @@
+# This playbook joins a windows system to a domain
+---
+- name: Join windows machie to a domain
+  hosts: 10.0.5.6
+  gather_facts: no
+  vars_prompt:
+  - name: domainuser
+    prompt: "Please enter the username of a domain user"
+    private: no
+  
+  - name: domainpass
+    prompt: "Please enter the password of the domain user"
+    private: yes
+
+  tasks:
+  - win_domain_membership:
+      dns_domain_name: "{{ domain }}"
+      hostname: "{{ hostname }}"
+      domain_admin_user: "{{ domainuser }}"
+      domain_admin_password: "{{ domainpass }}"
+      domain_ou_path: "OU=Servers,OU=Computers,OU=blue11,DC=blue11,DC=local"
+      state: domain
+    register: domain_state
+    
+  - win_reboot:
+    when: domain_state.reboot_required
