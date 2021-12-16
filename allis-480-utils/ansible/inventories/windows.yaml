@@ -7,18 +7,27 @@ windows:
           hostname: dc-blue11
         10.0.5.6:
           hostname: fs01
+      vars:
+        domain_ou_path: 'OU=Servers,OU=Computers,OU=blue11,DC=blue11,DC=local'
+        accounts_ou_path: 'OU=Accounts,OU=blue11,DC=blue11,DC=local'
+        groups_ou_path: 'OU=Groups,OU=Accounts,OU=blue11,DC=blue11,DC=local'
+        ansible_shell_type: powershell
+        ansible_user: ethan-adm@blue11.local
+
     workstations:
       hosts:
         10.0.5.89:
           hostname: wks1
         10.0.5.90:
           hostname: wks2
+      vars:
+        domain_ou_path: 'OU=Workstations,OU=Computers,OU=blue11,DC=blue11,DC=local'
+        ansible_shell_type: powershell
+        ansible_user: deployer
 
   vars:
-    ansible_user: deployer
     device: Ethernet0
     netmask: 255.255.255.0
     gateway: 10.0.5.2
     name_server: 10.0.5.5
     domain: blue11.local
-    ansible_shell_type: powershell
