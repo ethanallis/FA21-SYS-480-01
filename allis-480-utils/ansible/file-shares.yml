@@ -22,7 +22,7 @@
 
   - name: create group directories
     win_file:
-      path: C:\Shares\"{{ item }}"
+      path: 'C:\Shares\{{ item }}'
       state: directory
     with_items: "{{ groupnames.stdout_lines}}"
 
@@ -30,6 +30,6 @@
     win_share:
       name: "{{ item }}"
       description: "ansible managed share"
-      path: C:\Shares\"{{ item }}"
+      path: 'C:\Shares\{{ item }}'
       full: "{{ item }}"
     with_items: "{{ groupnames.stdout_lines}}"
