@@ -1,12 +1,13 @@
 # This playbook parses given csv files
 ---
-- name: Install software
+- name: CSV stuff
   hosts: 10.0.5.5
+  gather_facts: no
 
   tasks:
   - name: read cvs file
     read_csv:
-      path: files/accounts.csv
+      path: files/windows/accounts.csv
     register: accounts
     delegate_to: 127.0.0.1
 
@@ -16,11 +17,11 @@
     with_items: "{{ accounts.list }}"
 
   - name: group_file
-    command: cat files/groups.txt
+    command: cat files/windows/groups.txt
     register: groupnames
-    delegate_to: 172.0.0.1
+    delegate_to: 127.0.0.1
 
   - name: groupnames loop
     debug:
-      msh: "{{ item }}"
+      msg: "{{ item }}"
     with_items: "{{ groupnames.stdout_lines}}"

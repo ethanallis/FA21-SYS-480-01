@@ -6,9 +6,37 @@
 
   tasks:
   - name: read groups
+    command: cat files/windows/groups.txt
+    register: groupnames
+    delegate_to: 127.0.0.1
 
   - name: add groups
+    win_domain_group:
+      name: "{{ item }}"
+      scope: domainlocal
+      category: security
+      organizational_unit: "{{ groups_ou_path }}"
+      attributes:
+        description: "Ansible Managed Group"
+    with_items: "{{ groupnames.stdout_lines}}"
 
   - name: read users
+    read_csv:
+      path: files/windows/accounts.csv
+    register: accounts
+    delegate_to: 127.0.0.1
 
   - name: add users
+    win_domain_users:
+      name: "{{ item.account_name }}"
+      description: "Ansible managed user"
+      password: "{{ item.password }}"
+      path: "{{ accounts_ou_path }}"
+    with_items: "{{ accounts.list }}"
+
+  - name: add users to group
+    win_domain_group_membership:
+      name: "{{ item.group }}"
+      members: "{{ item.account_name }}"
+      state: pure
+    with_items: "{{ accounts.list }}"
