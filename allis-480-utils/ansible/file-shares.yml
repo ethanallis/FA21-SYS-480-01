@@ -6,11 +6,30 @@
 
   tasks:
   - name: Install file server
+    win_feature:
+      name:
+        - File-Services
 
   - name: read groups
+    command: cat files/windows/groups.txt
+    register: groupnames
+    delegate_to: 127.0.0.1
 
   - name: create share directory
+    win_file:
+      path: C:\Shares
+      state: directory
 
   - name: create group directories
+    win_file:
+      path: C:\Shares\"{{ item }}"
+      state: directory
+    with_items: "{{ groupnames.stdout_lines}}"
 
   - name: create smb shares
+    win_share:
+      name: "{{ item }}"
+      description: "ansible managed share"
+      path: C:\Shares\"{{ item }}"
+      full: "{{ item }}"
+    with_items: "{{ groupnames.stdout_lines}}"
