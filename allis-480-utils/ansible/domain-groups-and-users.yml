@@ -1,0 +1,14 @@
+# This playbook adds users and groups
+---
+- name: User and group addition
+  hosts: 10.0.5.5
+  gather_facts: no
+
+  tasks:
+  - name: read groups
+
+  - name: add groups
+
+  - name: read users
+
+  - name: add users

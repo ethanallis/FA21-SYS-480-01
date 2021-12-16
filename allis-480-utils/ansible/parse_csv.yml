@@ -1,0 +1,26 @@
+# This playbook parses given csv files
+---
+- name: Install software
+  hosts: 10.0.5.5
+
+  tasks:
+  - name: read cvs file
+    read_csv:
+      path: files/accounts.csv
+    register: accounts
+    delegate_to: 127.0.0.1
+
+  - name: an ansible loop
+    debug:
+      msg: "{{ item.account_name }} - {{ item.group }}"
+    with_items: "{{ accounts.list }}"
+
+  - name: group_file
+    command: cat files/groups.txt
+    register: groupnames
+    delegate_to: 172.0.0.1
+
+  - name: groupnames loop
+    debug:
+      msh: "{{ item }}"
+    with_items: "{{ groupnames.stdout_lines}}"

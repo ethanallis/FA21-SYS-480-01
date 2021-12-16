@@ -1,0 +1,7 @@
+# This playbook creates smb file shares
+---
+- name: File share creation
+  hosts: 10.0.5.6
+  gather_facts: no
+
+  tasks:
