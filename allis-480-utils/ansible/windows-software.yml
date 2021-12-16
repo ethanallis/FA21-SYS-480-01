@@ -19,3 +19,30 @@
       path: C:\480\googlechromestandaloneenterprisse64.msi
       wait: yes
       state: present
+
+  - name: copy wiregaurd msi
+    win_copy:
+      src: file/wireguard.msi
+      dest: C:\480\wireguard.msi
+
+  - name: install wiregaurd
+    win_package:
+      path: C:\480\wireguard.msi
+      wait: yes
+      state: present
+
+  - name: copy putty msi
+    win_copy:
+      src: file/putty.msi
+      dest: C:\480\putty.msi
+
+  - name: install putty
+    win_package:
+      path: C:\480\putty.msi
+      wait: yes
+      state: present  
+  
+  - name: cleanup 480 directory
+    win_file:
+      path: C:\480
+      state: absent
