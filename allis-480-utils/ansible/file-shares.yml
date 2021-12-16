@@ -5,3 +5,12 @@
   gather_facts: no
 
   tasks:
+  - name: Install file server
+
+  - name: read groups
+
+  - name: create share directory
+
+  - name: create group directories
+
+  - name: create smb shares
